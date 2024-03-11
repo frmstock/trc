@@ -1,0 +1,135 @@
+#!/bin/bash
+
+#trcctr
+line_dot=".........................................."
+red='\E[1;31m'
+green='\E[1;32m'
+res='\E[0m'
+
+function procItem()
+{
+  local tmp=($1)
+  
+  if [ ${#tmp[*]} -ne 2 ]
+  then
+    echo "error: $1"
+  fi
+  
+  local status="${red}error${res}"
+  if [ "xrunning" == "x${tmp[1]}" ]
+  then
+    status="${green}  OK ${res}"
+  fi
+  
+  local content="${tmp[0]} $line_dot"
+  content="${content:0:42} [ $status ]"
+  echo -e $content
+}
+
+function trc_status()
+{
+  docker ps -f "name=trc_" --format "{{.Names}} {{.State}}" 2>/dev/null | sort 2>/dev/null | while read line
+  do
+    procItem "$line"
+  done
+}
+
+function trc_stop()
+{
+  echo "stop ..."
+  docker stop trc_nginx
+  docker stop trc_console
+  docker stop trc_server
+  
+  docker stop trc_main
+  docker stop trc_deamon
+  docker stop trc_redis
+  docker stop trc_es
+  docker stop trc_mysql
+}
+
+function trc_start()
+{
+  echo "start ..."
+  docker start trc_main
+  docker start trc_mysql
+  docker start trc_redis
+  docker start trc_es
+  
+  docker start trc_deamon
+  docker start trc_server
+  docker start trc_console
+  docker start trc_nginx
+}
+
+function trc_help()
+{
+  echo "
+usage: trcctr [command]
+       trcctr -h
+
+command:
+  status    display status of all container
+  start     start all container
+  stop      stop all container
+  restart   restart all container  
+"
+}
+
+
+while getopts ":h" optchar; do
+  case "${optchar}" in
+    h)
+      trc_help
+      exit 0
+      ;;
+    ?)
+      echo "getopts param error"
+      echo ""
+      echo "run 'install-online.sh -h' for more information."
+      echo ""
+      exit 1
+      ;;
+    esac
+done
+
+if [ $# -eq 0 ]
+then
+  trc_status
+  exit 0
+fi
+
+function trc_main()
+{
+  case "$1" in
+    status)
+      trc_status
+      exit 0
+      ;;
+    start)
+      trc_start
+      echo ""
+      trc_status
+      exit 0
+      ;;
+    stop)
+      trc_stop
+      exit 0
+      ;;
+    restart)
+      trc_stop
+      echo ""
+      trc_start
+      echo ""
+      trc_status
+      exit 0
+      ;;
+    *)
+      trc_help
+      exit 0
+      ;;
+  esac
+}
+
+trap '' SIGINT SIGTSTP
+trc_main $@
