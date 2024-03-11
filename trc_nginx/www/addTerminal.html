@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>终端列表</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="#" onclick="javascript:history.back(-1);">
+        <span class="icon-map2">返回</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>终端列表</strong></font></p>
+<p align="center">&nbsp;</p>
+<div align="left"><form id="search">
+  <select class="form-control" style="width:200px;" name="os" onchange="gradeChange()">
+    <option value="">ALL</option>
+    <option value="anolis">anolis</option>
+    <option value="centos">centos</option>
+    <option value="debian">debian</option>
+    <option value="fedora">fedora</option>
+    <option value="linux">linux</option>
+    <option value="opensuse">opensuse</option>
+    <option value="rhel">rhel</option>
+    <option value="ubuntu">ubuntu</option>
+    <option value="Windows">Windows</option>
+    <option value="Windows 7">Windows 7</option>
+    <option value="Windows 10">Windows 10</option>
+    <option value="Windows XP">Windows XP</option>
+    <option value="Windows Server">Windows Server</option>
+    <option value="Windows Server 2003">Windows Server 2003</option>
+    <option value="Windows Server 2008">Windows Server 2008</option>
+    <option value="Windows Server 2012">Windows Server 2012</option>
+    <option value="Windows Server 2016">Windows Server 2016</option>
+    <option value="Windows Server 2019">Windows Server 2019</option>
+  </select>
+</form>
+<p align="center">&nbsp;</p>
+<form id="login-form">
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<thead>
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">UUID</td>
+			<td width='50' align="center">状态</td>
+			<td width='150' align="center">主机IP</td>
+			<td width='180' align="center">主机名</td>
+			<td width='180' align="center">操作系统</td>
+			<td width='80' align="center">系统版本</td>
+			<td width='180' align="center">活动时间</td>
+			<td width='180' align="center">开机时间</td>
+		</tr>
+	</thead>
+	<tbody name="terminal_list">
+	</tbody>
+</table>
+</form>
+</div>
+<p align="center">&nbsp;</p>
+<p align="left"><font style="font-size:30px"><strong><button type="submit" onclick="addTerminal()" style="width:150px;height:30px;font:small-caption;">增加</button></strong></font></p>
+
+</div>
+<script>
+var type=getQueryVariable("type");
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+function addTerminal()
+{
+  if(type==1)
+  {
+    $.ajax({
+      type: "post",
+      url: "/index.php/manage/task_mgr/addTerminal?uuid="+getQueryVariable("uuid"),
+      data: $("#login-form").serialize(),
+	  datatype:"json",
+      success:function addTerminal(data)
+	  {
+        if (data.status<0)
+        {
+          alert(data.message);
+          window.location.href=document.referrer;
+        }
+        else
+        {
+          window.location.href=document.referrer;
+        }
+      },
+      error:function()
+	  {
+        alert("访问失败");
+        window.location.href=document.referrer;
+      }
+    });
+  }
+  
+  if(type==2)
+  {
+    $.ajax({
+      type: "post",
+      url: "/index.php/manage/alert_config_mgr/addTerminal",
+      data: $("#login-form").serialize(),
+	  datatype:"json",
+      success:function addTerminal(data)
+	  {
+        if (data.status<0)
+        {
+          alert(data.message);
+          window.location.href="exportTask.html";
+        }
+        else
+        {
+          window.location.href="exportTask.html";
+        }
+      },
+      error:function()
+	  {
+        alert("访问失败");
+        window.location.href="exportTask.html";
+      }
+    });
+  }
+}
+function transform(data)
+{
+	if(data){
+		var date = new Date(data*1000);
+		var Year = date.getFullYear();
+		var Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+		var Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+		var Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+		var Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+		var Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+		return Year + '-' + Moth + '-' + Day + ' '+ Hour +':'+ Minute  + ':' + Sechond;
+	}
+	return '2015-10-01 08:12:00';
+}
+function gradeChange(){
+  if(type==1)
+  {
+    $.ajax({
+      url:"/index.php/manage/terminal_mgr/getlist2?uuid="+getQueryVariable("uuid"),
+      type:"post",
+      datatype:"json",
+      data: $("#search").serialize(),
+      headers:
+      {
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      success:function(data)
+      {
+        console.log(data);
+        if (data.status<0)
+        {
+          alert(data.message);
+          window.location.href="task.html";
+        }
+        else if (data.status==0)
+        {
+    	  $("tbody[name='terminal_list']").find('tr').remove();
+    	  for (var i=0;i<data.result.length;i++)
+    	  {
+    	    var status="离线";
+    		if(Date.parse(data.result[i].act_time)>data.pftime*1000)
+    		  status="在线";
+    	  	$("tbody[name='terminal_list']").append('<tr><td><input id="'+data.result[i].uuid+'" name="tids[]" value="'+data.result[i].uuid+'" type="checkbox"/><label for="'+data.result[i].uuid+'">'+data.result[i].uuid+'</label></td><td>'+status+'</td><td>'+data.result[i].host_ip+'</td><td>'+data.result[i].host_name+'</td><td>'+data.result[i].host_os+'</td><td>'+data.result[i].host_version+'</td><td>'+data.result[i].act_time+'</td><td>'+transform(data.result[i].host_uptime)+'</td></tr></br>');
+    	  }
+        }
+        else if (data.status==1)
+        {
+          window.location.href=data.goto;
+        }
+        else
+        {
+          window.location.href=document.referrer;
+        }
+      },
+      error:function()
+      {
+         window.location.href=document.referrer;
+      },
+    });
+  }
+  
+  if(type==2)
+  {
+    $.ajax({
+      url:"/index.php/manage/terminal_mgr/getlist3",
+      type:"post",
+      datatype:"json",
+      data: $("#search").serialize(),
+      headers:
+      {
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      success:function(data)
+      {
+        console.log(data);
+        if (data.status<0)
+        {
+          alert(data.message);
+          window.location.href="exportTask.html";
+        }
+        else if (data.status==0)
+        {
+    	  $("tbody[name='terminal_list']").find('tr').remove();
+    	  for (var i=0;i<data.result.length;i++)
+    	  {
+    	    var status="离线";
+    		if(Date.parse(data.result[i].act_time)>data.pftime*1000)
+    		  status="在线";
+    	  	$("tbody[name='terminal_list']").append('<tr><td><input id="tids" name="tids[]" value="'+data.result[i].uuid+'" type="checkbox"/>'+data.result[i].uuid+'</td><td>'+status+'</td><td>'+data.result[i].host_ip+'</td><td>'+data.result[i].host_name+'</td><td>'+data.result[i].host_os+'</td><td>'+data.result[i].host_version+'</td><td>'+data.result[i].act_time+'</td><td>'+transform(data.result[i].host_uptime)+'</td></tr></br>');
+    	  }
+        }
+        else if (data.status==1)
+        {
+          window.location.href=data.goto;
+        }
+        else
+        {
+          window.location.href="exportTask.html";
+        }
+      },
+      error:function()
+      {
+         window.location.href="exportTask.html";
+      },
+    });
+  }
+}
+gradeChange();
+</script>
+</body></html>

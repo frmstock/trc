@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>安全基线-横向对比</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="/blhome.html">
+        <span class="icon-map2">安全基线</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>安全基线-横向对比</strong></font></p>
+<p align="center">&nbsp;</p>
+<div align="left">
+<p align="center">&nbsp;</p>
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<thead>
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">检测项</td>
+			<td width='180' align="center">通过总数</td>
+			<td width='180' align="center">未通过总数</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="item_1">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(1)">口令生存周期</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_2">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(2)">口令更改最小时间间隔</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_3">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(3)">口令最小长度</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_4">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(4)">口令过期警告时间</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_16">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(16)">禁止使用旧密码</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_5">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(5)">登录超时设置</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_6">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(6)">特权账号检测</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_7">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(7)">空口令账号检测</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_8">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(8)">sudo账号检测</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_9">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(9)">root远程ssh登陆</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_14">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(14)">禁止空密码登录SSH</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_15">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(15)">SSH日志级别</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_10">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(10)">ping服务检测</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_11">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(11)">telnet服务检测</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_12">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(12)">风险文件检测</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_13">
+			<td width='360' align="center" style="background-color: lightgray;"><a href="#" onclick="blitem(13)">关键文件权限检测</a></td>
+			<td width='180' align="center">-</td>
+			<td width='180' align="center">-</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+<script>
+$.ajax({
+  url:"/index.php/manage/baseline_mgr/gethcom",
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  var total = data.total;
+	  for (var i=1;i<=16;i++)
+	  {
+	    var value=data.result[i];
+		var item_tr = document.getElementById("item_"+i);
+		var item_tds = item_tr.children;
+		item_tds[1].innerText = value;
+		item_tds[2].innerText = total-value;
+	  }
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+     window.location.href="/index.html";
+  },
+});
+function blitem(id){
+	window.location.href="blitem.html?item="+id;
+}
+</script>
+</body></html>

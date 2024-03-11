@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>安全基线-单项结果</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="#" onclick="javascript:history.back(-1);">
+        <span class="icon-map2">返回</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>安全基线-单项结果</strong></font></p>
+<p align="center">&nbsp;</p>
+<div align="left">
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<tbody id="hostinfo">
+		<tr>
+			<td width='150' align="right" style="background-color: lightgray;">检测项：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">未通过总数：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">通过总数：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">终端总数：</td>
+			<td align="center"></td>
+		</tr>
+	</tbody>
+</table>
+<p align="center">&nbsp;</p>
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<thead>
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">UUID</td>
+			<td width='150' align="center">主机IP</td>
+			<td width='180' align="center">主机名</td>
+			<td width='180' align="center">操作系统</td>
+			<td width='80' align="center">系统版本</td>
+			<td width='80' align="center">检测结果</td>
+			<td width='150' align="center">当前配置</td>
+			<td align="left">备注</td>
+			<td width='180' align="center">检测时间</td>
+			<td align="center">操作</td>
+		</tr>
+	</thead>
+	<tbody name="terminal_list">
+	</tbody>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+<script>
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+$.ajax({
+  url:"/index.php/manage/baseline_mgr/getListByItem?item="+getQueryVariable("item"),
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  var hostinfo_tb = document.getElementById("hostinfo");
+	  var hostinfo_tr = hostinfo_tb.children;
+	  switch(getQueryVariable("item"))
+	  {
+	    case "1":
+		  hostinfo_tr[0].children[1].innerText = "口令生存周期";
+		  break;
+	    case "2":
+		  hostinfo_tr[0].children[1].innerText = "口令更改最小时间间隔";
+		  break;
+	    case "3":
+		  hostinfo_tr[0].children[1].innerText = "口令最小长度";
+		  break;
+	    case "4":
+		  hostinfo_tr[0].children[1].innerText = "口令过期警告时间";
+		  break;
+	    case "16":
+		  hostinfo_tr[0].children[1].innerText = "禁止使用旧密码";
+		  break;
+	    case "5":
+		  hostinfo_tr[0].children[1].innerText = "登录超时设置";
+		  break;
+	    case "6":
+		  hostinfo_tr[0].children[1].innerText = "特权账号检测";
+		  break;
+	    case "7":
+		  hostinfo_tr[0].children[1].innerText = "空口令账号检测";
+		  break;
+	    case "8":
+		  hostinfo_tr[0].children[1].innerText = "sudo账号检测";
+		  break;
+	    case "9":
+		  hostinfo_tr[0].children[1].innerText = "root远程ssh登陆";
+		  break;
+	    case "14":
+		  hostinfo_tr[0].children[1].innerText = "禁止空密码登录SSH";
+		  break;
+	    case "15":
+		  hostinfo_tr[0].children[1].innerText = "SSH日志级别";
+		  break;
+	    case "10":
+		  hostinfo_tr[0].children[1].innerText = "ping服务检测";
+		  break;
+	    case "11":
+		  hostinfo_tr[0].children[1].innerText = "telnet服务检测";
+		  break;
+	    case "12":
+		  hostinfo_tr[0].children[1].innerText = "风险文件检测";
+		  break;
+	    case "13":
+		  hostinfo_tr[0].children[1].innerText = "关键文件权限检测";
+		  break;
+	    default:
+		  hostinfo_tr[0].children[1].innerText = "未知";
+		  break;
+	  }
+	  
+	  var item_s = 0;
+	  var item_p = 0;
+	  var item_n = 0;
+	  for (var i=0;i<data.result.length;i++)
+	  {
+	    item_s++;
+		//if(!data.result[i].baselines[0].hasOwnProperty("result"))
+		//  alert('ok');
+		if(data.result[i].baselines.length>0)
+		{
+		  if(data.result[i].baselines[0].result==1)
+		  {
+			$("tbody[name='terminal_list']").append('<tr><td>'+data.result[i].uuid+'</td><td>'+data.result[i].host_ip+'</td><td>'+data.result[i].host_name+'</td><td>'+data.result[i].host_os+'</td><td>'+data.result[i].host_version+'</td><td>通过</td><td>'+data.result[i].baselines[0].value+'</td><td>'+data.result[i].baselines[0].mark+'</td><td>'+data.result[i].baselines[0].update_at+'</td><td align="center"><button type="submit" style="width:60px;height:30px;" onclick="blinfo(\''+data.result[i].uuid+'\')">详情</button></td></tr></br>');
+		  	item_p++;
+		  }
+		  else
+		  {
+			$("tbody[name='terminal_list']").append('<tr><td>'+data.result[i].uuid+'</td><td>'+data.result[i].host_ip+'</td><td>'+data.result[i].host_name+'</td><td>'+data.result[i].host_os+'</td><td>'+data.result[i].host_version+'</td><td style="color: red;">未通过</td><td>'+data.result[i].baselines[0].value+'</td><td>'+data.result[i].baselines[0].mark+'</td><td>'+data.result[i].baselines[0].update_at+'</td><td align="center"><button type="submit" style="width:60px;height:30px;" onclick="blinfo(\''+data.result[i].uuid+'\')">详情</button></td></tr></br>');
+		  	item_n++;
+		  }
+		}
+		else  //未检测
+		{
+		  	$("tbody[name='terminal_list']").append('<tr><td>'+data.result[i].uuid+'</td><td>'+data.result[i].host_ip+'</td><td>'+data.result[i].host_name+'</td><td>'+data.result[i].host_os+'</td><td>'+data.result[i].host_version+'</td><td style="color: red;">未通过</td><td>-</td><td>未检测</td><td>-</td><td align="center"><button type="submit" style="width:60px;height:30px;" onclick="blinfo(\''+data.result[i].uuid+'\')">详情</button></td></tr></br>');
+			item_n++;
+		}
+	  }
+	  
+	  hostinfo_tr[1].children[1].innerText = item_n;
+	  hostinfo_tr[2].children[1].innerText = item_p;
+	  hostinfo_tr[3].children[1].innerText = item_s;
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+     window.location.href="/index.html";
+  },
+});
+function blinfo(id){
+	window.location.href="blinfo.html?objid="+id;
+}
+</script>
+</body></html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>安全基线-检测结果</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="#" onclick="javascript:history.back(-1);">
+        <span class="icon-map2">返回</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>安全基线-检测结果</strong></font></p>
+<p align="center">&nbsp;</p>
+<div align="left">
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<tbody id="hostinfo">
+		<tr>
+			<td width='150' align="right" style="background-color: lightgray;">主机名称：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">IP地址：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">操作系统：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">系统版本：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">最近检测时间：</td>
+			<td align="center"></td>
+		</tr>
+			<td align="right" style="background-color: lightgray;">终端检测时间：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">未通过总项数：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">通过总项数：</td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td align="right" style="background-color: lightgray;">检测总项数：</td>
+			<td align="center"></td>
+		</tr>
+	</tbody>
+</table>
+<p align="center">&nbsp;</p>
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<thead>
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">检测项</td>
+			<td width='80' align="center">检测结果</td>
+			<td width='150' align="center">当前配置</td>
+			<td align="left">备注</td>
+			<td width='180' align="center">检测时间</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="item_1">
+			<td width='360' align="center" style="background-color: lightgray;">口令生存周期</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_2">
+			<td width='360' align="center" style="background-color: lightgray;">口令更改最小时间间隔</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_3">
+			<td width='360' align="center" style="background-color: lightgray;">口令最小长度</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_4">
+			<td width='360' align="center" style="background-color: lightgray;">口令过期警告时间</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_16">
+			<td width='360' align="center" style="background-color: lightgray;">禁止使用旧密码</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_5">
+			<td width='360' align="center" style="background-color: lightgray;">登录超时设置</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_6">
+			<td width='360' align="center" style="background-color: lightgray;">特权账号检测</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_7">
+			<td width='360' align="center" style="background-color: lightgray;">空口令账号检测</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_8">
+			<td width='360' align="center" style="background-color: lightgray;">sudo账号检测</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_9">
+			<td width='360' align="center" style="background-color: lightgray;">root远程ssh登陆</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_14">
+			<td width='360' align="center" style="background-color: lightgray;">禁止空密码登录SSH</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_15">
+			<td width='360' align="center" style="background-color: lightgray;">SSH日志级别</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_10">
+			<td width='360' align="center" style="background-color: lightgray;">ping服务检测</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_11">
+			<td width='360' align="center" style="background-color: lightgray;">telnet服务检测</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_12">
+			<td width='360' align="center" style="background-color: lightgray;">风险文件检测</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+		<tr id="item_13">
+			<td width='360' align="center" style="background-color: lightgray;">关键文件权限检测</td>
+			<td width='80' align="center"></td>
+			<td width='150' align="center"></td>
+			<td align="left">未检测</td>
+			<td width='180' align="center">-</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+<script>
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+$.ajax({
+  url:"/index.php/manage/baseline_mgr/getlist?objid="+getQueryVariable("objid"),
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  var hostinfo_tb = document.getElementById("hostinfo");
+	  var hostinfo_tr = hostinfo_tb.children;
+	  hostinfo_tr[0].children[1].innerText = data.terminal.host_name;
+	  hostinfo_tr[1].children[1].innerText = data.terminal.host_ip;
+	  hostinfo_tr[2].children[1].innerText = data.terminal.host_os;
+	  hostinfo_tr[3].children[1].innerText = data.terminal.host_version;
+	  
+	  var item_s = 0;
+	  var item_p = 0;
+	  var item_n = 0;
+	  for (var i=0;i<data.result.length;i++)
+	  {
+	    var id=data.result[i].item;
+		if(id==0)
+		{
+			hostinfo_tr[4].children[1].innerText = data.result[i].update_at;
+			if(data.result[i].mark=='-')
+			  hostinfo_tr[5].children[1].innerText = data.result[i].mark;
+			else
+			  hostinfo_tr[5].children[1].innerText = transform(data.result[i].mark);
+			  
+			continue;
+		}
+		
+		var item_tr = document.getElementById("item_"+id);
+		var item_tds = item_tr.children;
+	    item_s++;
+		if(data.result[i].result==1)
+		{
+			item_tds[1].innerText = "通过";
+			item_p++;
+		}
+		else
+		{
+			item_tds[1].innerText = "未通过";
+			item_tds[1].style.color = "red";
+			item_n++;
+		}
+		item_tds[2].innerText = data.result[i].value;
+		item_tds[3].innerText = data.result[i].mark;
+		item_tds[4].innerText = data.result[i].update_at;
+	  }
+	  
+	  hostinfo_tr[6].children[1].innerText = item_n;
+	  hostinfo_tr[7].children[1].innerText = item_p;
+	  hostinfo_tr[8].children[1].innerText = item_s;
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+     window.location.href="/index.html";
+  },
+});
+function transform(data)
+{
+	if(data){
+		var date = new Date(data*1000);
+		var Year = date.getFullYear();
+		var Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+		var Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+		var Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+		var Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+		var Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+		return Year + '-' + Moth + '-' + Day + ' '+ Hour +':'+ Minute  + ':' + Sechond;
+	}
+	return '2015-10-01 08:12:00';
+}
+</script>
+</body></html>

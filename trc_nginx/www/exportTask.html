@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>我的配置</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+.button {
+    background-color: buttonface;/*#e7e7e7*/
+	border-color: buttonborder;/*#6c757d*/
+    border: 1px solid;
+    border-radius: .25rem;
+	/*border-style: outset;*/
+    color: black;
+    /*padding: 5px 5px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+a.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+input[type=checkbox] {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    position: relative;
+}
+ 
+input[type=checkbox]:after {
+    position: absolute;
+    width: 10px;
+    height: 15px;
+    top: 0;
+    content: " ";
+    background-color: #fff;
+    color: #fff;
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid grey;
+    padding: 0 3px;
+    border-radius: 3px;
+}
+ 
+input[type=checkbox]:checked:after {
+    background-color: #0f97e7;
+    content: "✓";
+    font-size: 12px;
+}
+ 
+input[type=checkbox]:disabled:after {
+    width: 10px;
+    height: 15px;
+    top: 0;
+    color: #fff;
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid grey;
+    padding: 0 3px;
+    border-radius: 3px;
+    content: "✓";
+    font-size: 12px;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="/home.html">
+        <span class="icon-map2">首页</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>告警设置</strong></font></p>
+<p align="center">&nbsp;</p>
+<div align="left">
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<tbody name="alert_list">
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">UUID</td>
+			<td width='120' align="center">主机名</td>
+			<td width='100' align="center">IP地址</td>
+			<td width='120' align="center">操作系统</td>
+			<td width='80' align="center">系统版本</td>
+			<td width='180' align="center">活动时间</td>
+			<td align="center">操作</td>
+		</tr>
+	</tbody>
+	<tr>
+		<td width="150" colspan="11" align="center"><button type="submit" id="addtermials" style="width:150px;height:30px;">添加</button></td>
+	</tr>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+<p align="left"><font style="font-size:30px"><strong>数据导出</strong></font></p>
+<p align="center">&nbsp;</p>
+<div align="left">
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<tbody name="task_list">
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">UUID</td>
+			<td width='120' align="center">类型</td>
+			<td width='360' align="center">终端</td>
+			<td width='80' align="center">状态</td>
+			<td width='80' align="center">文件</td>
+			<td width='180' align="center">创建时间</td>
+			<td width='180' align="center">执行时间</td>
+			<td width='180' align="center">完成时间</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+<script>
+$.ajax({
+  url:"/index.php/manage/alert_config_mgr/getlist",
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    console.log(data);
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  for (var i=0;i<data.result.length;i++)
+	  {
+		var uuid=data.result[i].terminal.uuid;
+	    var html = '<tr onclick="opentest(\''+uuid+'\')"><td>'+uuid+'</td><td>'+data.result[i].terminal.host_name+'</td><td>'+data.result[i].terminal.host_ip+'</td><td>'+data.result[i].terminal.host_os+'</td><td>'+data.result[i].terminal.host_version+'</td><td>'+data.result[i].terminal.act_time+'</td><td align="center"><a style="width:80px;height:30px;" class="button" onclick="task_delete(\''+uuid+'\')">删除</a></td></tr></br>';
+		html = html + '<tr id="'+uuid+'" style="display: none">';
+		html = html + '  <td colspan="20">';
+		html = html + '		<form id="'+uuid+'_form">';
+		html = html + '	<table style="font-size: 24px;border-spacing: 0px;border: 0px solid #f4f4f4;" width="100%">';
+		html = html + '		<tbody>';
+		html = html + '			<tr style="border: 0px solid #f4f4f4;">';
+		html = html + '				<td width="100" align="center" style="border: 0px solid #f4f4f4;">终端：</td>';
+		html = html + '				<td style="border: 0px solid #f4f4f4;">';
+		html = html + '					<input name="item[]" id="'+uuid+'_1" type="checkbox" value="1"/>';
+		html = html + '					<label for="'+uuid+'_1" class="radio-label">开机</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_2" type="checkbox" value="2" disabled/>';
+		html = html + '					<label for="'+uuid+'_2" class="radio-label">上线</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_3" type="checkbox" value="3" disabled/>';
+		html = html + '					<label for="'+uuid+'_3" class="radio-label">下线</label>';
+		//html = html + '					<input name="item[]" id="'+uuid+'_4" type="checkbox" value="4" disabled/>';
+		//html = html + '					<label for="'+uuid+'_4" class="radio-label">注册</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_5" type="checkbox" value="5" disabled/>';
+		html = html + '					<label for="'+uuid+'_5" class="radio-label">重复</label>';
+		html = html + '				</td>';
+		html = html + '			</tr>';
+		html = html + '			<tr style="border: 0px solid #f4f4f4;">';
+		html = html + '				<td width="100" align="center" style="border: 0px solid #f4f4f4;">进程：</td>';
+		html = html + '				<td style="border: 0px solid #f4f4f4;">';
+		html = html + '					<input name="item[]" id="'+uuid+'_7" type="checkbox" value="7"/>';
+		html = html + '					<label for="'+uuid+'_7" class="radio-label">启动</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_8" type="checkbox" value="8"/>';
+		html = html + '					<label for="'+uuid+'_8" class="radio-label">崩溃</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_9" type="checkbox" value="9"/>';
+		html = html + '					<label for="'+uuid+'_9" class="radio-label">重启</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_6" type="checkbox" value="6"/>';
+		html = html + '					<label for="'+uuid+'_6" class="radio-label">未启动</label>';
+		html = html + '				</td>';
+		html = html + '			</tr>';
+		html = html + '			<tr style="border: 0px solid #f4f4f4;">';
+		html = html + '				<td width="100" align="center" style="border: 0px solid #f4f4f4;">网络：</td>';
+		html = html + '				<td style="border: 0px solid #f4f4f4;">';
+		html = html + '					<input name="item[]" id="'+uuid+'_12" type="checkbox" value="12"/>';
+		html = html + '					<label for="'+uuid+'_12" class="radio-label">建立连接</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_13" type="checkbox" value="13"/>';
+		html = html + '					<label for="'+uuid+'_13" class="radio-label">断开连接</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_16" type="checkbox" value="16"/>';
+		html = html + '					<label for="'+uuid+'_16" class="radio-label">打开监听</label>';
+		html = html + '					<input name="item[]" id="'+uuid+'_17" type="checkbox" value="17"/>';
+		html = html + '					<label for="'+uuid+'_17" class="radio-label">关闭监听</label>';
+		html = html + '				</td>';
+		html = html + '			</tr>';
+		html = html + '			<tr style="border: 0px solid #f4f4f4;">';
+		html = html + '				<td colspan="20" width="100" align="center" style="border: 0px solid #f4f4f4;">';
+		html = html + '<font style="font-size:30px"><strong><button type="submit" onclick="saveitem(\''+uuid+'_form\', \''+uuid+'\')" style="width:150px;height:30px;font:small-caption;">保存</button></strong></font>';
+		html = html + '				</td>';
+		html = html + '			</tr>';
+		html = html + '		</tbody>';
+		html = html + '	</table>';
+		html = html + '		</form>';
+		html = html + '  </td>';
+		html = html + '</tr>';
+
+		$("tbody[name='alert_list']").append(html);
+		
+		for(var j=0;j<data.result[i].alert_config_details.length;j++)
+		{
+		  var item = data.result[i].alert_config_details[j].item;
+		  var obj = document.getElementById(uuid+"_"+item);
+		  obj.checked = true;
+		}
+	  }
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+    window.location.href="/index.html";
+  },
+});
+$.ajax({
+  url:"/index.php/manage/export_task_mgr/getlist",
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  for (var i=0;i<data.result.length;i++)
+	  {
+	    var exec_at=data.result[i].exec_at;
+		if(exec_at==null)
+			exec_at = "-";
+		
+		var finish_at=data.result[i].finish_at;
+		if(finish_at==null)
+			finish_at = "-";
+		
+		if(data.result[i].isfinish)
+			$("tbody[name='task_list']").append('<tr><td>'+data.result[i].uuid+'</td><td>'+data.result[i].type+'</td><td>'+data.result[i].objid+'</td><td>'+data.result[i].status+'</td><td><a href="/export/'+data.result[i].uuid+'/'+data.result[i].file_name+'" download="'+data.result[i].file_name+'">下载文件</a></td><td>'+data.result[i].create_at+'</td><td>'+exec_at+'</td><td>'+finish_at+'</td></tr></br>');
+		else
+			$("tbody[name='task_list']").append('<tr><td>'+data.result[i].uuid+'</td><td>'+data.result[i].type+'</td><td>'+data.result[i].objid+'</td><td>'+data.result[i].status+'</td><td>-</td><td>'+data.result[i].create_at+'</td><td>'+exec_at+'</td><td>'+finish_at+'</td></tr></br>');
+	  }
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+    window.location.href="/index.html";
+  },
+});
+$("#addtermials").click(function(){
+  window.location.href="/addTerminal.html?type=2";
+});
+function task_delete(id){
+  var r=confirm("是否删除?");
+  if ( r == true ){
+    $.ajax({
+ 	  	url:"/index.php/manage/alert_config_mgr/delTerminal?tid="+id,
+ 	  	type:"GET",
+ 	  	datatype:"json",
+ 	  	success:function updateConf(result){
+		  alert("删除成功!");
+	  	  window.location.reload();
+ 	  	},
+ 	  	error:function(){
+ 	  	  alert("删除失败!");
+	  	  window.location.reload();
+ 	  	}
+ 	  })
+  }
+}
+function opentest(id)
+{
+  var tr = document.getElementById(id);
+  if(tr.style.display=="none")
+    tr.style.display = "table-row";
+	//tr.style.display = "contents";
+  else
+    tr.style.display = "none";
+}
+function saveitem(formid, objid)
+{
+    console.log($("#"+formid).serialize());
+    $.ajax({
+      type: "post",
+      url: "/index.php/manage/alert_config_mgr/addTerminalItem?objid="+objid,
+      data: $("#"+formid).serialize(),
+	  datatype:"json",
+      success:function addTerminal(data)
+	  {
+        if (data.status<0)
+        {
+          alert(data.message);
+          window.location.href="task.html";
+	  	  window.location.reload();
+        }
+        else
+        {
+	  	  //window.location.reload();
+        }
+      },
+      error:function()
+	  {
+        alert("访问失败");
+      }
+    });
+}
+</script>
+</body></html>

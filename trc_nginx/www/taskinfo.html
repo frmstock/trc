@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>任务详情</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+input[type=checkbox] {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    position: relative;
+}
+ 
+input[type=checkbox]:after {
+    position: absolute;
+    width: 10px;
+    height: 15px;
+    top: 0;
+    content: " ";
+    background-color: #fff;
+    color: #fff;
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid grey;
+    padding: 0 3px;
+    border-radius: 3px;
+}
+ 
+input[type=checkbox]:checked:after {
+    background-color: #0f97e7;
+    content: "✓";
+    font-size: 12px;
+}
+ 
+input[type=checkbox]:disabled:after {
+    width: 10px;
+    height: 15px;
+    top: 0;
+    color: #fff;
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid grey;
+    padding: 0 3px;
+    border-radius: 3px;
+    content: "✓";
+    font-size: 12px;
+}
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+input[type="radio"] + .radio-label:before {
+  content: '';
+  background: #f4f4f4;
+  border-radius: 100%;
+  border: 1px solid #b4b4b4;
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  position: relative;
+  margin-right: 0.3em;
+  cursor: pointer;
+  text-align: center;
+  -webkit-transition: all 250ms ease;
+  transition: all 250ms ease;
+}
+input[type="radio"]:checked + .radio-label:before {
+  background-color: #3197EE;
+  box-shadow: inset 0 0 0 4px #f4f4f4;
+}
+input[type="radio"]:focus + .radio-label:before {
+  outline: none;
+  border-color: #3197EE;
+}
+input[type="radio"]:disabled + .radio-label:before {
+  box-shadow: inset 0 0 0 4px #f4f4f4;
+  border-color: #b4b4b4;
+}
+input[type="radio"] + .radio-label:empty:before {
+  margin-right: 0;
+}
+.button {
+    background-color: buttonface;/*#e7e7e7*/
+	border-color: buttonborder;/*#6c757d*/
+    border: 1px solid;
+    border-radius: .25rem;
+	/*border-style: outset;*/
+    color: black;
+    /*padding: 5px 5px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+a.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="/task.html">
+        <span class="icon-map2">任务</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>任务详情</strong></font></p>
+<p align="center">&nbsp;</p>
+
+<div align="left">
+<table style="margin-top:10px;margin-left:50px;margin-right:4px;margin-bottom:4px;font-size: 24px;border-spacing: 0px;border-color: #0c64eb;border-collapse: separate;border-width: 1px;" width="910" border="1" cellpadding="3">
+	<tbody>
+		<tr>
+			<td width="150" align="center">任务名称</td>
+			<td><input readonly type="text" id="name" value="" style="width:500px;height:25px"></td>
+		</tr>
+		<tr>
+			<td width="150" align="center">任务类型</td>
+			<td>
+				<input disabled name="type" id="mode_mjs" type="radio" value="1" checked="checked"/>
+				<label for="mode_mjs" class="radio-label">win</label>
+				<input disabled name="type" id="mode_ns" type="radio" value="2"/>
+				<label for="mode_ns" class="radio-label">linux</label>
+			</td>
+		</tr>
+		<tr>
+			<td width="150" align="center">其它配置</td>
+			<td>
+				<input disabled name="type" id="is_log" type="checkbox" value="1" />
+				<label for="is_log" class="radio-label">日志信息</label>
+				<input disabled name="is_debug" id="is_debug" type="checkbox" value="1" />
+				<label for="is_debug" class="radio-label">调试信息</label>
+				<input disabled name="type" id="is_error" type="checkbox" value="1" />
+				<label for="is_error" class="radio-label">错误信息</label>
+			</td>
+		</tr>
+		<tr>
+			<td width="150" align="center">脚本内容</td>
+			<td>
+				<textarea readonly name="content" id="content" rows="10" cols="30" style="min-height: 200px;max-height: 200px;min-width: 750px;max-width: 750px;"></textarea>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<tbody name="terminal_list">
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">UUID</td>
+			<td width='50' align="center">在线</td>
+			<td width='150' align="center">主机IP</td>
+			<td width='180' align="center">主机名</td>
+			<td width='180' align="center">操作系统</td>
+			<td width='80' align="center">系统版本</td>
+			<td width='180' align="center">活动时间</td>
+			<td width='180' align="center">开机时间</td>
+			<td width='80' align="center">任务状态</td>
+			<td width='180' align="center">更新时间</td>
+			<td align="center">操作</td>
+		</tr>
+	</tbody>
+	<tr>
+		<td width="150" colspan="11" align="center"><button type="submit" id="addtermials" style="width:150px;height:30px;">添加</button></td>
+	</tr>
+</table>
+</br>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+</body>
+<script>
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+$("#addtermials").click(function(){
+  window.location.href="/addTerminal.html?type=1&uuid="+getQueryVariable("uuid");
+});
+
+function task_log(id){
+	window.location.href="tasklog.html?uuid="+getQueryVariable("uuid")+"&objid="+id;
+}
+function task_delete(id){
+  var r=confirm("是否删除?");
+  if ( r == true ){
+    $.ajax({
+ 	  	url:"/index.php/manage/task_mgr/delTerminal?uuid="+getQueryVariable("uuid")+"&tid="+id,
+ 	  	type:"GET",
+ 	  	datatype:"json",
+ 	  	success:function updateConf(result){
+		  alert("删除成功!");
+	  	  window.location.reload();
+ 	  	},
+ 	  	error:function(){
+ 	  	  alert("删除失败!");
+	  	  window.location.reload();
+ 	  	}
+ 	  })
+  }
+}
+function transform(data)
+{
+	if(data){
+		var date = new Date(data*1000);
+		var Year = date.getFullYear();
+		var Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+		var Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+		var Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+		var Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+		var Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+		return Year + '-' + Moth + '-' + Day + ' '+ Hour +':'+ Minute  + ':' + Sechond;
+	}
+	return '2015-10-01 08:12:00';
+}
+$.ajax({
+	url:"/index.php/manage/task_mgr/getone?uuid="+getQueryVariable("uuid"),
+	type:"GET",
+	datatype:"json",
+	headers: {
+				"content-type": "application/x-www-form-urlencoded"
+			 },
+	success:function(data){
+	  console.log(data)
+	  if (data.status<0)
+      {
+        alert(result.message);
+        window.location.href="task.html";
+      }
+      else if (data.status==0)
+      {
+	    var name = document.getElementById("name"); 
+		name.value=data.result.name;
+	    
+		var mode_mjs = document.getElementById("mode_mjs");
+		var mode_ns = document.getElementById("mode_ns");
+		if(data.result.type=="1")
+		{
+		    mode_mjs.checked = true;
+		    mode_ns.checked = false;
+		}
+		else
+		{
+		    mode_mjs.checked = false;
+		    mode_ns.checked = true;
+		}
+		
+		var is_debug = document.getElementById("is_debug");
+		if(data.result.is_debug=="1")
+		{
+		    is_debug.checked = true;
+		}
+		else
+		{
+		    is_debug.checked = false;
+		}
+		var is_log = document.getElementById("is_log");
+		if(data.result.is_log=="1")
+		{
+		    is_log.checked = true;
+		}
+		else
+		{
+		    is_log.checked = false;
+		}
+		var is_error = document.getElementById("is_error");
+		if(data.result.is_error=="1")
+		{
+		    is_error.checked = true;
+		}
+		else
+		{
+		    is_error.checked = false;
+		}
+		
+		if(data.result.status!=0)
+		   document.getElementById("addtermials").disabled = true;
+		
+		$('#content').val(data.result.content);
+	    for (var i=0;i<data.result.terminals2.length;i++)
+	    {
+		  var status;
+	      switch(data.result.terminals2[i].pivot.status)
+	      {//0:未领取  1:已领取 2:执行中 3:已完成
+		    case "1":
+	          status = "领取成功";
+			  break;
+			case "2":
+			  status = "解析成功";
+			  break;
+			case "3":
+			  status = "解析失败";
+			  break;
+			case "4":
+			  status = "下载成功";
+			  break;
+			case "5":
+			  status = "下载失败";
+			  break;
+			case "6":
+			  status = "开始执行";
+			  break;
+			case "7":
+			  status = "启动失败";
+			  break;
+			case "8":
+			  status = "执行完成";
+			  break;
+			case "9":
+			  status = "超时作废";
+			  break;
+			default:
+			  status = "尚未领取";
+			  break;
+		  }
+		  
+		  if(data.result.terminals2[i].pivot.status==0)
+		  {
+		    if(data.result.status==0)
+		      $("tbody[name='terminal_list']").append('<tr><td>'+data.result.terminals2[i].uuid+'</td><td>-</td><td>'+data.result.terminals2[i].host_ip+'</td><td>'+data.result.terminals2[i].host_name+'</td><td>'+data.result.terminals2[i].host_os+'</td><td>'+data.result.terminals2[i].host_version+'</td><td>'+data.result.terminals2[i].act_time+'</td><td>'+transform(data.result.terminals2[i].host_uptime)+'</td><td>'+status+'</td><td>'+data.result.terminals2[i].pivot.update_at+'</td><td align="center"><a style="width:80px;height:30px;" class="button" onclick="task_delete(\''+data.result.terminals2[i].uuid+'\')">删除</a><a style="width:80px;height:30px;" class="disabled button" onclick="task_log(\''+data.result.terminals2[i].uuid+'\')">日志</a></td></tr></br>');
+			else
+		      $("tbody[name='terminal_list']").append('<tr><td>'+data.result.terminals2[i].uuid+'</td><td>-</td><td>'+data.result.terminals2[i].host_ip+'</td><td>'+data.result.terminals2[i].host_name+'</td><td>'+data.result.terminals2[i].host_os+'</td><td>'+data.result.terminals2[i].host_version+'</td><td>'+data.result.terminals2[i].act_time+'</td><td>'+transform(data.result.terminals2[i].host_uptime)+'</td><td>'+status+'</td><td>'+data.result.terminals2[i].pivot.update_at+'</td><td align="center"><a style="width:80px;height:30px;" class="disabled button" onclick="task_log(\''+data.result.terminals2[i].uuid+'\')">日志</a></td></tr></br>');
+		  }
+		  else
+		  {
+		    $("tbody[name='terminal_list']").append('<tr><td>'+data.result.terminals2[i].uuid+'</td><td>-</td><td>'+data.result.terminals2[i].host_ip+'</td><td>'+data.result.terminals2[i].host_name+'</td><td>'+data.result.terminals2[i].host_os+'</td><td>'+data.result.terminals2[i].host_version+'</td><td>'+data.result.terminals2[i].act_time+'</td><td>'+transform(data.result.terminals2[i].host_uptime)+'</td><td>'+status+'</td><td>'+data.result.terminals2[i].pivot.update_at+'</td><td align="center"><a style="width:80px;height:30px;" class="button" onclick="task_log(\''+data.result.terminals2[i].uuid+'\')">日志</a></td></tr></br>');
+		  }
+		}
+      }
+      else if (data.status==1)
+      {
+        window.location.href=result.goto;
+      }
+      else
+      {
+        window.location.href="task.html";
+      }
+	},
+	error:function(){
+		alert("获取信息失败");
+ 		window.location.href="task.html";
+	},
+});
+</script>
+</html>

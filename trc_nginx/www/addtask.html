@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>新建任务</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+input[type=checkbox] {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    position: relative;
+}
+ 
+input[type=checkbox]:after {
+    position: absolute;
+    width: 10px;
+    height: 15px;
+    top: 0;
+    content: " ";
+    background-color: #fff;
+    color: #fff;
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid grey;
+    padding: 0 3px;
+    border-radius: 3px;
+}
+ 
+input[type=checkbox]:checked:after {
+    background-color: #0f97e7;
+    content: "✓";
+    font-size: 12px;
+}
+ 
+input[type=checkbox]:disabled:after {
+    width: 10px;
+    height: 15px;
+    top: 0;
+    color: #fff;
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid grey;
+    padding: 0 3px;
+    border-radius: 3px;
+    content: "✓";
+    font-size: 12px;
+}
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+input[type="radio"] + .radio-label:before {
+  content: '';
+  background: #f4f4f4;
+  border-radius: 100%;
+  border: 1px solid #b4b4b4;
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  position: relative;
+  margin-right: 0.3em;
+  cursor: pointer;
+  text-align: center;
+  -webkit-transition: all 250ms ease;
+  transition: all 250ms ease;
+}
+input[type="radio"]:checked + .radio-label:before {
+  background-color: #3197EE;
+  box-shadow: inset 0 0 0 4px #f4f4f4;
+}
+input[type="radio"]:focus + .radio-label:before {
+  outline: none;
+  border-color: #3197EE;
+}
+input[type="radio"]:disabled + .radio-label:before {
+  box-shadow: inset 0 0 0 4px #f4f4f4;
+  border-color: #b4b4b4;
+}
+input[type="radio"] + .radio-label:empty:before {
+  margin-right: 0;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="/task.html">
+        <span class="icon-map2">任务</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>新建任务</strong></font></p>
+<p align="center">&nbsp;</p>
+
+<div align="left">
+<table style="margin-top:10px;margin-left:50px;margin-right:4px;margin-bottom:4px;font-size: 24px;border-spacing: 0px;border: 1px solid #0075ff;" width="910" border="1">
+	<tbody>
+		<tr>
+			<td width="150" align="center">任务名称</td>
+			<td><input type="text" id="name" value="" style="width:500px;height:25px"></td>
+		</tr>
+		<tr>
+			<td width="150" align="center">任务类型</td>
+			<td>
+				<input name="type" id="mode_mjs" type="radio" value="1" checked="checked"/>
+				<label for="mode_mjs" class="radio-label">win</label>
+				<input name="type" id="mode_ns" type="radio" value="2"/>
+				<label for="mode_ns" class="radio-label">linux</label>
+			</td>
+		</tr>
+		<tr>
+			<td width="150" align="center">其它配置</td>
+			<td>
+				<input name="type" id="is_log" type="checkbox" value="1" checked/>
+				<label for="is_log" class="radio-label">日志信息</label>
+				<input name="is_debug" id="is_debug" type="checkbox" value="1" disabled/>
+				<label for="is_debug" class="radio-label">调试信息</label>
+				<input name="type" id="is_error" type="checkbox" value="1" />
+				<label for="is_error" class="radio-label">错误信息</label>
+			</td>
+		</tr>
+		<tr>
+			<td width="150" align="center">脚本内容</td>
+			<td>
+				<textarea name="content" id="content" rows="10" cols="30" style="min-height: 200px;max-height: 200px;min-width: 750px;max-width: 750px;"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td width="150" colspan="2" align="center"><button type="submit" id="updateConf" style="width:150px;height:30px;">保存</button></td>
+		</tr>
+	</tbody>
+</table>
+
+</br>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+</body>
+<script>
+$("#mode_mjs").click(function(){
+  document.getElementById("is_debug").checked=false;
+  document.getElementById("is_debug").disabled=true;
+  document.getElementById("is_error").disabled=false;
+});
+$("#mode_ns").click(function(){
+  document.getElementById("is_error").checked=false;
+  document.getElementById("is_debug").disabled=false;
+  document.getElementById("is_error").disabled=true;
+});
+$("#updateConf").click(function(){
+    var is_debug = 0;
+	if (document.getElementById("is_debug").checked) {
+      is_debug = 1;
+	}
+    var is_log = 0;
+	if (document.getElementById("is_log").checked) {
+      is_log = 1;
+	}
+    var is_error = 0;
+	if (document.getElementById("is_error").checked) {
+      is_error = 1;
+	}
+
+ 	var parArr = {
+ 		'type':$('input[type^=radio]:checked').val(),
+ 		'is_debug':is_debug,
+ 		'is_log':is_log,
+ 		'is_error':is_error,
+ 		'name':document.getElementById("name").value,
+ 		'content':document.getElementById("content").value
+ 	};
+ 	var serverinfo = JSON.stringify(parArr);
+ 	var r=confirm("是否保存?");
+ 	if ( r == true ){
+ 		$.ajax({
+ 			url:"/index.php/manage/task_mgr/add",
+ 			type:"POST",
+ 			data:serverinfo,
+ 			datatype:"json",
+ 			success:function updateConf(result){
+			  if (result.status<0)
+              {
+                alert(result.message);
+                window.location.href="task.html";
+              }
+              else if (result.status==0)
+              {
+ 				alert("保存成功!");
+	            window.location.href="task.html";
+              }
+              else if (result.status==1)
+              {
+                window.location.href=result.goto;
+              }
+              else
+              {
+                window.location.href="task.html";
+              }
+ 			},
+ 			error:function(){
+ 				alert("提交失败!");
+ 				window.location.href="task.html";
+ 			}
+ 		})
+ 	}
+ });
+</script>
+</html>

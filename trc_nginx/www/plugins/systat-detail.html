@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>插件系统-systat</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="#" onclick="javascript:history.back(-1);">
+        <span class="icon-map2">返回</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>插件系统-systat</strong></font></p>
+
+<p align="center">&nbsp;</p>
+<div align="left">
+<table style="margin-top:10px;margin-left:50px;margin-right:4px;margin-bottom:4px;font-size: 24px;border-spacing: 0px;border: 1px solid #0075ff;" width="910" border="1">
+	<tbody>
+		<tr>
+			<td width="150" align="center">终端ID</td>
+			<td><input readonly type="text" id="terminal_uuid" value="" style="width:500px;height:25px"></td>
+		</tr>
+		<tr>
+			<td width="150" colspan="2" align="center"><button type="submit" onclick="exportdata()" style="width:150px;height:30px;font-size: 16px;">导出数据</button></td>
+		</tr>
+	</tbody>
+</table>
+
+<p align="center">&nbsp;</p>
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<thead>
+		<tr style="background-color: lightgray;">
+			<td width='80' align="center">procs_r</td>
+			<td width='80' align="center">procs_b</td>
+			<td width='80' align="center">mem_swpd</td>
+			<td width='80' align="center">mem_free</td>
+			<td width='80' align="center">mem_buff</td>
+			<td width='80' align="center">mem_cache</td>
+			<td width='80' align="center">swap_si</td>
+			<td width='80' align="center">swap_so</td>
+			<td width='80' align="center">io_bi</td>
+			<td width='80' align="center">io_bo</td>
+			<td width='80' align="center">system_in</td>
+			<td width='80' align="center">system_cs</td>
+			<td width='80' align="center">cpu_us</td>
+			<td width='80' align="center">cpu_sy</td>
+			<td width='80' align="center">cpu_id</td>
+			<td width='80' align="center">cpu_wa</td>
+			<td width='80' align="center">cpu_st</td>
+			<td width='80' align="center">forks</td>
+			<td width='180' align="center">平台时间</td>
+			<td width='180' align="center" style="/*display: none*/">终端时间</td>
+		</tr>
+	</thead>
+	<tbody name="data_list">
+	</tbody>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+<script>
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+function transform(data)
+{
+	if(data){
+		var date = new Date(data*1000);
+		var Year = date.getFullYear();
+		var Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+		var Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+		var Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+		var Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+		var Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+		return Year + '-' + Moth + '-' + Day + ' '+ Hour +':'+ Minute  + ':' + Sechond;
+	}
+	return '2015-10-01 08:12:00';
+}
+
+var terminal_uuid = document.getElementById("terminal_uuid"); 
+terminal_uuid.value=getQueryVariable("objid");
+
+$.ajax({
+  url:"/index.php/manage/log_mgr/getPluginsSystat?objid="+getQueryVariable("objid"),
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  for (var i=0;i<data.result.length;i++)
+	  {
+		$("tbody[name='data_list']").append('<tr><td align="center">'+data.result[i]._source.procs_r+'</td><td align="center">'+data.result[i]._source.procs_b+'</td><td align="center">'+data.result[i]._source.mem_swpd+'</td><td align="center">'+data.result[i]._source.mem_free+'</td><td align="center">'+data.result[i]._source.mem_buff+'</td><td align="center">'+data.result[i]._source.mem_cache+'</td><td align="center">'+data.result[i]._source.swap_si+'</td><td align="center">'+data.result[i]._source.swap_so+'</td><td align="center">'+data.result[i]._source.io_bi+'</td><td align="center">'+data.result[i]._source.io_bo+'</td><td align="center">'+data.result[i]._source.system_in+'</td><td align="center">'+data.result[i]._source.system_cs+'</td><td align="center">'+data.result[i]._source.cpu_us+'</td><td align="center">'+data.result[i]._source.cpu_sy+'</td><td align="center">'+data.result[i]._source.cpu_id+'</td><td align="center">'+data.result[i]._source.cpu_wa+'</td><td align="center">'+data.result[i]._source.cpu_st+'</td><td align="center">'+data.result[i]._source.forks+'</td><td>'+transform(data.result[i]._source.pftime)+'</td><td>'+transform(data.result[i]._source.eptime)+'</td></tr></br>');
+	  }
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+     window.location.href="/index.html";
+  },
+});
+function exportdata(){
+  $.ajax({
+  	url:"/index.php/manage/export_task_mgr/add?type=2&objid="+getQueryVariable("objid"),
+  	type:"GET",
+  	datatype:"json",
+  	success:function delet(result){
+  		if (result.status<0)
+        {
+          alert(result.message);
+        }
+  		else if (result.status==0)
+  		{
+			alert("添加成功!");
+  		}
+  		else if (result.status==1)
+        {
+          window.location.href=result.goto;
+        }
+  	},
+  	error:function(result){
+  	}
+  })
+}
+</script>
+</body></html>
