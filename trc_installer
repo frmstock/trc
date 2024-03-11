@@ -1,0 +1,601 @@
+#!/bin/bash
+
+let port_https=30000
+let port_http=30001
+data_volume=/opt/trc/data
+host_ip=""
+
+function toInt()
+{
+  local tmp
+  let tmp=$1
+  if [ $? -eq 0 ]
+  then
+    echo $tmp
+	return 0
+  fi
+  
+  echo "param error($1)."
+  echo ""
+  echo $2
+  return 0
+}
+
+# getopts
+while getopts ":p:P:d:hv" param
+do
+  case $param in
+    p)
+      let port_https=`toInt $OPTARG $port_https`
+      ;;
+    P)
+      let port_http=`toInt $OPTARG $port_http`
+      ;;
+    d)
+      data_volume=`realpath $OPTARG`
+      ;;
+    v)
+      echo "trc 1.0"
+	  exit 0
+      ;;
+    h)
+      echo "This is a tool for installing trc on docker"
+      echo ""
+      echo "Usage: install-online.sh [-p https_port] [-P http_port] [-d volume_data]"
+      echo "       install-online.sh -h|-v"
+      echo ""
+      echo "       -d    set data dir, default /opt/trc/data"
+      echo "       -h    display this help and exit"
+      echo "       -p    set https port, default 30000"
+      echo "       -P    set http port , default 30001"
+      echo "       -v    display version"
+      echo ""
+      exit 1
+      ;;
+    ?)
+      echo "getopts param error"
+      echo ""
+      echo "run 'install-online.sh -h' for more information."
+      echo ""
+      exit 1
+      ;;
+  esac
+done
+
+function getHostIP()
+{
+  local tmp=(`ip -f inet -4 route show default 2>/dev/null | grep "default" 2>/dev/null | grep "dev" 2>/dev/null`)
+  if [ ${#tmp[*]} -lt 5 ]
+  then
+    echo "Get host IP fail."
+	exit 1 
+  fi
+  
+  local eth_name=${tmp[4]}
+  tmp=(`ip -f inet -t addr show dev "$eth_name" up 2>/dev/null | grep "global" 2>/dev/null | grep "$eth_name" 2>/dev/null`)
+  if [ ${#tmp[*]} -lt 2 ]
+  then
+    echo "Get host IP fail."
+	exit 1 
+  fi
+  
+  host_ip="${tmp[1]%/*}"
+}
+
+getHostIP
+echo "install config:"
+echo "http    port: $port_http"
+echo "https   port: $port_https"
+echo "volume   dir: $data_volume"
+echo "localhost IP: $host_ip"
+read -p "are you sure?(y/n): " confirmation
+#if [[ $confirmation != 'y' && $confirmation != 'Y' ]]
+if [[ $confirmation == 'y' || $confirmation == 'Y' ]]
+then
+  echo "go on installation..."
+  echo ""
+else
+  echo "cancel install."
+  exit 0
+fi
+
+function checkConfig()
+{
+  local tmp=0
+  if [[ $port_http -ge 65535 || $port_http -lt 30000 ]]
+  then
+    echo "http port invalid($port_http)."
+	exit 1
+  fi
+  
+  if [[ $port_https -ge 65535 || $port_https -lt 30000 ]]
+  then
+    echo "https port invalid($port_https)."
+	exit 1
+  fi
+  
+  let tmp=`ss -antop 2>/dev/null | grep LIST 2>/dev/null | grep ":$port_http " 2>/dev/null | wc -l 2>/dev/null`
+  if [ $tmp -ne 0 ]
+  then
+    echo "http port is used.($port_http)"
+    exit 1
+  fi
+  
+  let tmp=`ss -antop 2>/dev/null | grep LIST 2>/dev/null | grep ":$port_https " 2>/dev/null | wc -l 2>/dev/null`
+  if [ $tmp -ne 0 ]
+  then
+    echo "https port is used.($port_https)"
+    exit 1
+  fi
+  
+  if [ ! -d "$data_volume" ]
+  then
+    mkdir -p "$data_volume"
+    if [ $? -ne 0 ]
+    then
+      echo "volume dir mkdir fail.($data_volume)"
+      exit 1
+    fi
+  fi
+  
+  mkdir -p "$data_volume/es"
+  mkdir -p "$data_volume/es/data"
+  mkdir -p "$data_volume/es/log"
+  mkdir -p "$data_volume/mysql"
+  mkdir -p "$data_volume/mysql/trc_outfile"
+  mkdir -p "$data_volume/redis"
+  mkdir -p "$data_volume/trc"
+  mkdir -p "$data_volume/trc/etc"
+  mkdir -p "$data_volume/trc/export"
+  mkdir -p "$data_volume/trc/task"
+  mkdir -p "$data_volume/trc/update"
+  chmod 777 "$data_volume/es/data"
+  chmod 777 "$data_volume/es/log"
+  chown 48:48 "$data_volume/trc/task"
+  chown -R 999:999 "$data_volume/mysql"
+}
+
+function checkImageTrcMain()
+{
+  echo -n "pull images trc_main ........ "
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:4 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:4)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageTrcInstaller()
+{
+  echo -n "pull images trc_installer ... "
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_installer:1.0 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_installer:1.0)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageMysql()
+{
+  echo -n "pull images trc_mysql ....... "
+  docker pull mariadb:10.8 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(mariadb:10.8)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageRedis()
+{
+  echo -n "pull images trc_redis ....... "
+  docker pull redis:7.2 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(redis:7.2)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageES()
+{
+  echo -n "pull images trc_es .......... "
+  docker pull elasticsearch:7.17.5 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(elasticsearch:7.17.5)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageTrcServer()
+{
+  echo -n "pull images trc_server ...... "
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_server:1.0 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_server:1.0)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageTrcDeamon()
+{
+  echo -n "pull images trc_deamon ...... "
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_deamon:1.0 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_deamon:1.0)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageTrcConsole()
+{
+  echo -n "pull images trc_console ..... "
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.0 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.0)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function checkImageTrcNginx()
+{
+  echo -n "pull images trc_nginx ....... "
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.0 >/dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "fail"
+	echo ""
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.0)"
+    exit -1
+  fi
+  
+  echo "OK"
+  return 0
+}
+
+function createContainerTrcInstaller()
+{
+  local trc_dir="$data_volume/trc"
+  if [ -f "$trc_dir/installer.done" ]
+  then
+    return 0
+  fi
+  
+  docker run --rm --name trc_installer -e server_ip="$host_ip" -e server_port="$port_https" -v "$trc_dir":/opt/trc -v "$data_volume/mysql":/var/lib/mysql --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_installer:1.0
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_installer) fail."
+    exit -1
+  fi
+  
+  if [ -f "$trc_dir/installer.done" ]
+  then
+    return 0
+  fi
+  
+  echo "installer error."
+  exit -1
+}
+
+function createContainerTrcMain()
+{
+  local state=`docker ps -a -f "name=trc_main" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_main
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_main) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_main -v /etc/localtime:/etc/localtime:ro -it -p $port_https:443 -p $port_http:80 registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:4
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_main) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+function createContainerMysql()
+{
+  local state=`docker ps -a -f "name=trc_mysql" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_mysql
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_mysql) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_mysql -v /etc/localtime:/etc/localtime:ro -v "$data_volume/mysql":/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mysql --net=container:trc_main mariadb:10.8
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_mysql) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+function createContainerRedis()
+{
+  local state=`docker ps -a -f "name=trc_redis" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_redis
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_redis) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_redis -v /etc/localtime:/etc/localtime:ro --net=container:trc_main redis:7.2
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_redis) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+function createContainerES()
+{
+  local state=`docker ps -a -f "name=trc_es" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_es
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_es) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_es -v /etc/localtime:/etc/localtime:ro -e ES_JAVA_OPTS="-Xms100m -Xmx512m" -v $data_volume/es/data:/opt/es/data -v $data_volume/es/log:/opt/es/log -v $data_volume/trc/etc/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml --net=container:trc_main elasticsearch:7.17.5
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_es) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+function createContainerTrcServer()
+{
+  local state=`docker ps -a -f "name=trc_server" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_server
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_server) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_server -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/license.bin":/license.bin --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_server:1.0
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_server) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+function createContainerTrcDeamon()
+{
+  local state=`docker ps -a -f "name=trc_deamon" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_deamon
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_deamon) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_deamon -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/task":/opt/trc/task -v "$data_volume/trc/export":/opt/trc/export -v "$data_volume/mysql/trc_outfile":/var/lib/mysql/trc_outfile -v "$data_volume/trc/etc/mysql.cnf":/etc/mysql/conf.d/mysql.cnf --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_deamon:1.0
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_deamon) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+function createContainerTrcConsole()
+{
+  local state=`docker ps -a -f "name=trc_console" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_console
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_console) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_console -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/task":/opt/trc/tp5/task/ --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.0
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_console) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+function createContainerTrcNginx()
+{
+  local state=`docker ps -a -f "name=trc_nginx" --format='{{.State}}'`
+  if [ "x$state" == "xrunning" ]
+  then
+    return 0
+  elif [ "x$state" == "xexited" ]
+  then
+    docker start trc_nginx
+    if [ $? -ne 0 ]
+    then
+      echo "start container(trc_nginx) fail."
+      exit -1
+    fi
+	
+    #sleep 10
+    return 0
+  fi
+  
+  docker run -d --name trc_nginx -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/task":/opt/trc/www/task -v "$data_volume/trc/export":/opt/trc/www/export -v "$data_volume/trc/update":/opt/trc/www/update -v "$data_volume/trc/nginx/cert":/opt/trc/cert/ --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.0
+  if [ $? -ne 0 ]
+  then
+    echo "create container(trc_nginx) fail."
+    exit -1
+  fi
+  
+  #sleep 10
+  return 0
+}
+
+
+checkConfig
+
+checkImageTrcInstaller
+checkImageTrcMain
+checkImageRedis
+checkImageMysql
+checkImageES
+checkImageTrcServer
+checkImageTrcDeamon
+checkImageTrcConsole
+checkImageTrcNginx
+
+createContainerTrcMain
+createContainerMysql
+sleep 10
+
+createContainerTrcInstaller
+createContainerRedis
+createContainerES
+
+sleep 10
+createContainerTrcServer
+createContainerTrcDeamon
+createContainerTrcConsole
+createContainerTrcNginx
+
+\cp -f "$data_volume/trc/bin/"* /usr/local/bin/
+echo ""
+echo "system URL: https://$host_ip:$port_https"
+echo "user name : admin"
+echo "password  : test1212"
+echo ""
+echo "install done."
+echo ""
+trcctr status
