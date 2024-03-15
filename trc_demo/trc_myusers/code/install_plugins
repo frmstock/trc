@@ -1,0 +1,143 @@
+#!/bin/sh
+
+
+mysql_server=127.0.0.1
+mysql_port=3306
+mysql_user=root
+mysql_passwd=mysql
+
+plugins_agent_dir="/plugins"
+plugins_install_dir="/opt/trc/update/plug-ins"
+
+
+plugins_exec_dir="$plugins_agent_dir/plug-ins"
+plugins_cron_dir="$plugins_agent_dir/cron"
+plugins_conf_dir="$plugins_agent_dir/conf"
+plugins_file_conf="$plugins_agent_dir/plug-ins.conf"
+
+conf_string=`jq -c . "$plugins_file_conf" 2>/dev/null`
+plg_code=`echo $conf_string | jq -r .code 2>/dev/null`
+plg_name=`echo $conf_string | jq -r .name 2>/dev/null`
+plg_ostype=`echo $conf_string | jq -r .ostype 2>/dev/null`
+plg_osbit=`echo $conf_string | jq -r .osbit 2>/dev/null`
+plg_tmp=`echo $conf_string | jq -r '.os[]' 2>/dev/null`
+plg_desc=`echo $conf_string | jq -r .description 2>/dev/null`
+if [ "x$plg_code" = "xnull" -o "x$plg_ostype" = "xnull" -o "x$plg_osbit" = "xnull" ]
+then
+  echo "plugins package conf file error."
+  exit 1
+fi
+
+if [ "x$plg_name" = "xnull" ]
+then
+  plg_name=""
+fi
+
+if [ "x$plg_desc" = "xnull" ]
+then
+  plg_desc=""
+fi
+
+if [ "x$plg_tmp" = "xnull" ]
+then
+  plg_tmp=""
+fi
+
+plg_oslist=""
+for one in $plg_tmp
+do
+  if [ ${#plg_oslist} -eq 0 ]
+  then
+    plg_oslist="$one"
+  else
+    plg_oslist="$plg_oslist $one"
+  fi
+done
+plugins_exec_file="$plugins_exec_dir/$plg_code"
+if [ "$plg_ostype" = "win" ]
+then
+  plugins_exec_file="$plugins_exec_file.exe"
+fi
+
+plugins_cron_file="$plugins_cron_dir/$plg_code.conf"
+plugins_conf_file="$plugins_conf_dir/$plg_code.conf"
+if [ ! -e $plugins_exec_file ]
+then
+  echo "plugins package exe file not exist."
+  exit 1
+fi
+
+if [ ! -e $plugins_cron_file ]
+then
+  echo "plugins package cron file not exist."
+  exit 1
+fi
+
+
+
+
+function frmCut()
+{
+  shift $1;
+  echo $1;
+}
+
+
+plg_tmp=`md5sum $plugins_exec_file 2>/dev/null`
+plg_version=`frmCut 1 $plg_tmp`
+if [ ${#plg_version} -ne 32 ]
+then
+  echo "plugins package exe file md5 error."
+  exit 1
+fi
+
+plg_tmp=`md5sum $plugins_cron_file 2>/dev/null`
+md5_cron=`frmCut 1 $plg_tmp`
+if [ ${#md5_cron} -ne 32 ]
+then
+  echo "plugins package cron file md5 error."
+  exit 1
+fi
+
+
+sql_content="insert into \`plugins_files\`(\`plugins_version\`, \`file_type\`, \`file_md5\`) values('"$plg_version"', 1, '"$plg_version"');"
+sql_content="$sql_content""insert into \`plugins_files\`(\`plugins_version\`, \`file_type\`, \`file_md5\`) values('"$plg_version"', 2, '"$md5_cron"');"
+mkdir -p "/$plg_version"
+mkdir -p "/$plg_version/conf"
+mkdir -p "/$plg_version/cron"
+mkdir -p "/$plg_version/plug-ins"
+\cp -f $plugins_file_conf "/$plg_version/"
+\cp -f $plugins_cron_file "/$plg_version/cron/"
+\cp -f $plugins_exec_file "/$plg_version/plug-ins/"
+
+if [ -e $plugins_conf_file ]
+then
+  plg_tmp=`md5sum $plugins_conf_file 2>/dev/null`
+  md5_conf=`frmCut 1 $plg_tmp`
+  if [ ${#md5_conf} -ne 32 ]
+  then
+    echo "plugins package conf file md5 error."
+    exit 1
+  fi
+  
+  sql_content="$sql_content""insert into \`plugins_files\`(\`plugins_version\`, \`file_type\`, \`file_md5\`) values('"$plg_version"', 3, '"$md5_conf"');"
+  \cp -f $plugins_conf_file "/$plg_version/conf/"
+fi
+
+if [ "$plg_ostype" = "linux" ]
+then
+  plg_ostype=2
+else
+  plg_ostype=1
+fi
+
+if [ "$plg_osbit" = "64" ]
+then
+  plg_osbit=2
+else
+  plg_osbit=1
+fi
+
+sql_content="$sql_content""insert into \`plugins\`(\`code\`, \`name\`, \`version\`, \`description\`, \`os_type\`, \`os_bits\`, \`os_list\`) values('"$plg_code"', '"$plg_name"', '"$plg_version"', '"$plg_desc"', "$plg_ostype", "$plg_osbit", '"$plg_oslist"');"
+mysql -h "$mysql_server" -u"$mysql_user" -p"$mysql_passwd" --force trc -e "$sql_content" 2>/dev/null
+\cp -rf "/$plg_version" "$plugins_install_dir/"

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+users=`cat /etc/passwd 2>/dev/null | cut -d: -f1 2>/dev/null | tr '\n'  ' ' 2>/dev/null`
+echo "{\"list\":\"$users\"}" > "$TRC_TMP/result/myusers.rst"

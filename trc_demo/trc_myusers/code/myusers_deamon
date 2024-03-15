@@ -1,0 +1,38 @@
+#!/bin/sh
+redis_server=127.0.0.1
+redis_port=6379
+
+mysql_server=127.0.0.1
+mysql_port=3306
+mysql_user=root
+mysql_passwd=mysql
+
+temp_file="plugins_myusers.tmp"
+
+while true
+do
+  redis-cli -h "$redis_server" -p "$redis_port" brpop plugins:myusers 10 > "$temp_file" 2>/dev/null
+  code=$?
+  if [ $code -eq 0 ]
+  then
+    key=`sed -n '1p' "$temp_file" 2>/dev/null`
+    if [ "x$key" = "xplugins:myusers" ]
+    then
+      value=`cat "$temp_file" 2>/dev/null`
+      msg=`echo "${value:15}" 2>/dev/null | jq -rc '.' 2>/dev/null`
+      
+      entid=`echo "$msg" 2>/dev/null | jq -r '.entid' 2>/dev/null`
+      objid=`echo "$msg" 2>/dev/null | jq -r '.objid' 2>/dev/null`
+      if [ "x$entid" != "xnull" -a "x$objid" != "xnull" ]
+      then
+        users=`echo "$msg" 2>/dev/null | jq -r '.list' 2>/dev/null`
+        if [ "x$users" != "xnull" ]
+        then
+          mysql -h "$mysql_server" -P "$mysql_port" -u"$mysql_user" -p"$mysql_passwd" -e "insert into \`trc\`.\`myusers\`(\`terminal_id\`, \`list\`) values($objid, '""$users""') on duplicate key update \`list\`='""$users""', update_at=now();\n"
+        fi
+      fi
+    fi
+  fi
+   
+  rm -f "$temp_file"
+done
