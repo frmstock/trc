@@ -1,4 +1,4 @@
-plugins system
+扩展插件功能
 
 
 开发一个功能插件，假设插件名称为“myplugins”，需要开发三处程序
