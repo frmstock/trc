@@ -149,8 +149,10 @@ class Api
 						$json->plug_ins->checkbaseline->eptime = $json->host_time;
 						$json->plug_ins->checkbaseline->pftime = $pftime;
 						$redis->lpush("baseline_linux", json_encode($json->plug_ins->checkbaseline, JSON_UNESCAPED_UNICODE));
+						$redis->ltrim("baseline_linux", 0, 299);
 						
 						$redis->hSet("plugins:update:" . $terminal->uuid, "checkbaseline", "{\"name\":\"checkbaseline\", \"version\":\"" . $json->plug_ins->checkbaseline->self . "\", \"conf\":\"\"}");
+						unset($json->plug_ins->checkbaseline);
 					}
 					if(property_exists($json->plug_ins, 'lpm'))
 					{
@@ -189,8 +191,10 @@ class Api
 								$lpmitem->pftime = $pftime;
 								
 								$redis->lpush("lpm", json_encode($lpmitem, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("lpm", 0, 1999);
 							}
 						}
+						unset($json->plug_ins->lpm);
 					}
 					if(property_exists($json->plug_ins, 'sysperf'))
 					{
@@ -204,6 +208,8 @@ class Api
 						$json->plug_ins->sysperf->eptime = $json->host_time;
 						$json->plug_ins->sysperf->pftime = $pftime;
 						$redis->lpush("plugins:sysperf", json_encode($json->plug_ins->sysperf, JSON_UNESCAPED_UNICODE));
+						$redis->ltrim("plugins:sysperf", 0, 99);
+						unset($json->plug_ins->sysperf);
 					}
 					if(property_exists($json->plug_ins, 'systat'))
 					{
@@ -216,6 +222,8 @@ class Api
 						$json->plug_ins->systat->eptime = $json->host_time;
 						$json->plug_ins->systat->pftime = $pftime;
 						$redis->lpush("plugins:systat", json_encode($json->plug_ins->systat, JSON_UNESCAPED_UNICODE));
+						$redis->ltrim("plugins:systat", 0, 99);
+						unset($json->plug_ins->systat);
 					}
 					if(property_exists($json->plug_ins, 'procperf'))
 					{
@@ -230,6 +238,7 @@ class Api
 								$proc->pftime = $pftime;
 							
 								$redis->lpush("plugins:procperf", json_encode($proc, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:procperf", 0, 99);
 							}
 						}
 						
@@ -249,11 +258,13 @@ class Api
 									$alert->item = config('AlertConfigItem.procmon')[$alert->type];
 									
 									$redis->lpush("alerts", json_encode($alert, JSON_UNESCAPED_UNICODE));
+									$redis->ltrim("alerts", 0, 99);
 								}
 							}
 						}
 						
 						$redis->hSet("plugins:update:" . $terminal->uuid, "procperf", "{\"name\":\"procperf\", \"version\":\"" . $json->plug_ins->procperf->self . "\", \"conf\":\"" . $json->plug_ins->procperf->conf . "\"}");
+						unset($json->plug_ins->procperf);
 					}
 					if(property_exists($json->plug_ins, 'tcpmon'))
 					{
@@ -268,16 +279,19 @@ class Api
 								$tcpitem->eptime = $json->host_time;
 								$tcpitem->pftime = $pftime;
 								$redis->lpush("plugins:tcpmon", json_encode($tcpitem, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:tcpmon", 0, 99);
 								
 								$number=$number+1;
 								$alertitem=config('AlertConfigItem.tcpmon')[$tcpitem->action];
 								$content=config('AlertConfigItem.name')[$alertitem] . ' ' . $tcpitem->local_ip . ':' . $tcpitem->local_port . ' <-> ' . $tcpitem->remote_ip . ':' . $tcpitem->remote_port;
 								$alert = array('terminal' => $terminal, 'category' => 3, 'type' => $tcpitem->action, 'item' => $alertitem, 'pftime' => time(), 'eptime' => $json->host_time, 'epnano' => $number, 'content' => $content);
 								$redis->lpush("alerts", json_encode($alert, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("alerts", 0, 99);
 							}
 						}
 						
 						$redis->hSet("plugins:update:" . $terminal->uuid, "tcpmon", "{\"name\":\"tcpmon\", \"version\":\"" . $json->plug_ins->tcpmon->self . "\", \"conf\":\"" . $json->plug_ins->tcpmon->conf . "\"}");
+						unset($json->plug_ins->tcpmon);
 					}
 					if(property_exists($json->plug_ins, 'privesccheck'))
 					{
@@ -292,10 +306,12 @@ class Api
 								$proc->pftime = $pftime;
 							
 								$redis->lpush("plugins:privesccheck", json_encode($proc, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:privesccheck", 0, 99);
 							}
 						}
 						
 						$redis->hSet("plugins:update:" . $terminal->uuid, "privesccheck", "{\"name\":\"privesccheck\", \"version\":\"" . $json->plug_ins->privesccheck->self . "\", \"conf\":\"\"}");
+						unset($json->plug_ins->privesccheck);
 					}
 					if(property_exists($json->plug_ins, 'cntrpm'))
 					{
@@ -310,6 +326,7 @@ class Api
 								$psitem->eptime = $json->host_time;
 								$psitem->pftime = $pftime;
 								$redis->lpush("plugins:cntrpm:pslist", json_encode($psitem, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:cntrpm:pslist", 0, 99);
 								
 								//if(strpos($terminal->host_os, "Windows ") === 0)
 								//{
@@ -337,7 +354,7 @@ class Api
 								$logitem->eptime = $json->host_time;
 								$logitem->pftime = $pftime;
 								$redis->lpush("plugins:cntrpm:loglist", json_encode($logitem, JSON_UNESCAPED_UNICODE));
-								
+								$redis->ltrim("plugins:cntrpm:loglist", 0, 99);
 								//if($logitem->action != 'start')
 								//	continue;
 								//
@@ -358,6 +375,7 @@ class Api
 						}
 						
 						$redis->hSet("plugins:update:" . $terminal->uuid, "cntrpm", "{\"name\":\"cntrpm\", \"version\":\"" . $json->plug_ins->cntrpm->self . "\", \"conf\":\"" . $json->plug_ins->cntrpm->conf . "\"}");
+						unset($json->plug_ins->cntrpm);
 					}
 					if(property_exists($json->plug_ins, 'cntrec'))
 					{
@@ -372,6 +390,7 @@ class Api
 								$psitem->eptime = $json->host_time;
 								$psitem->pftime = $pftime;
 								$redis->lpush("plugins:cntrec:eclist", json_encode($psitem, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:cntrec:eclist", 0, 99);
 							}
 						}
 						if(property_exists($json->plug_ins->cntrec, 'loglist'))
@@ -385,10 +404,12 @@ class Api
 								$logitem->eptime = $json->host_time;
 								$logitem->pftime = $pftime;
 								$redis->lpush("plugins:cntrec:loglist", json_encode($logitem, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:cntrec:loglist", 0, 99);
 							}
 						}
 						
 						$redis->hSet("plugins:update:" . $terminal->uuid, "cntrec", "{\"name\":\"cntrec\", \"version\":\"" . $json->plug_ins->cntrec->self . "\", \"conf\":\"" . $json->plug_ins->cntrec->conf . "\"}");
+						unset($json->plug_ins->cntrec);
 					}
 					if(property_exists($json->plug_ins, 'hostdiscover'))
 					{
@@ -404,6 +425,7 @@ class Api
 								$ipitem->eptime = $json->host_time;
 								$ipitem->pftime = $pftime;
 								$redis->lpush("plugins:hostdiscover:ip_list", json_encode($ipitem, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:hostdiscover:ip_list", 0, 99);
 							}
 						}
 						if(property_exists($json->plug_ins->hostdiscover, 'arp_list'))
@@ -416,8 +438,24 @@ class Api
 								$logitem->eptime = $json->host_time;
 								$logitem->pftime = $pftime;
 								$redis->lpush("plugins:hostdiscover:arp_list", json_encode($logitem, JSON_UNESCAPED_UNICODE));
+								$redis->ltrim("plugins:hostdiscover:arp_list", 0, 99);
 							}
 						}
+						
+						unset($json->plug_ins->hostdiscover);
+					}
+					
+					foreach ($json->plug_ins as $key => $value)
+					{
+						$redis->hSet("plugins:update:" . $terminal->uuid, $key, "{\"name\":\"" . $key . "\", \"version\":\"\", \"conf\":\"\"}");
+						
+						$json->plug_ins->$key->entid = $terminal->enterprise_id;
+						$json->plug_ins->$key->objuuid = $terminal->uuid;
+						$json->plug_ins->$key->objid = $terminal->id;
+						$json->plug_ins->$key->eptime = $json->host_time;
+						$json->plug_ins->$key->pftime = $pftime;
+						$redis->lpush("plugins:" . $key, json_encode($json->plug_ins->$key, JSON_UNESCAPED_UNICODE));
+						$redis->ltrim("plugins:" . $key, 0, 99);
 					}
 				}
 				if($terminal->host_uptime!=$json->uptime)

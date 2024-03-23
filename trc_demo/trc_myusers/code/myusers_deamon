@@ -1,4 +1,6 @@
 #!/bin/sh
+
+
 redis_server=127.0.0.1
 redis_port=6379
 
@@ -7,8 +9,14 @@ mysql_port=3306
 mysql_user=root
 mysql_passwd=mysql
 
-temp_file="plugins_myusers.tmp"
 
+/install_plugins2
+/install_plugins
+/plugins_register &
+mysql -h "$mysql_server" -P "$mysql_port" -u"$mysql_user" -p"$mysql_passwd" trc < /trc_myusers.sql
+
+
+temp_file="plugins_myusers.tmp"
 while true
 do
   redis-cli -h "$redis_server" -p "$redis_port" brpop plugins:myusers 10 > "$temp_file" 2>/dev/null

@@ -26,6 +26,19 @@ class RedisMgr extends FrmController
 		}
     }
 	
+    public function getPluginsList(Request $request)
+    {
+        $result = [];
+		$start_time = time()-300;
+		$end_time = time()+300;
+		$redis=new Redis();
+        $redis->connect($this->redis_server, $this->redis_port, 5);
+		$result = $redis->zRangeByScore("trc:plugins:list", $start_time, $end_time);
+        $redis->close();
+		
+        return json(['status' => 0, 'message' => '', 'result' => $result]);
+    }
+	
     public function getPlugins(Request $request)
     {
         $result = [];

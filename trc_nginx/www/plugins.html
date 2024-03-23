@@ -63,8 +63,8 @@
 <div align="left">
 	<p align="center">&nbsp;</p>
 	<div class="Service-box">
-        <div class="Service-content clearfix">
-            <a href="/plugins/plugins_usable.html" class="Service-item">
+        <div class="Service-content clearfix" name="plugins_list">
+            <a href="/_plugins/plugins_usable.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag001.png" alt="">
                 </div>
@@ -76,7 +76,7 @@
                 <div class="item-tag"></div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/plugins.html" class="Service-item">
+            <a href="/_plugins/plugins.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag001.png" alt="">
                 </div>
@@ -112,7 +112,7 @@
                 <div class="item-tag"></div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/sysperf-terminal.html" class="Service-item">
+            <a href="/_plugins/sysperf-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag003.png" alt="">
                 </div>
@@ -120,7 +120,7 @@
                 <div class="item-text">监控系统一般性指标，如CPU，内存，网络的使用情况</div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/systat-terminal.html" class="Service-item">
+            <a href="/_plugins/systat-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag005.png" alt="">
                 </div>
@@ -128,7 +128,7 @@
                 <div class="item-text">监控系统的性能指标，如磁盘IO，CPU，内存的使用情况</div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/procperf-terminal.html" class="Service-item">
+            <a href="/_plugins/procperf-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag004.png" alt="">
                 </div>
@@ -136,7 +136,7 @@
                 <div class="item-text">监控某一进程的运行情况，如果崩溃重启，资源占用情况</div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/tcpmon-terminal.html" class="Service-item">
+            <a href="/_plugins/tcpmon-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag004.png" alt="">
                 </div>
@@ -144,7 +144,7 @@
                 <div class="item-text">监控某端口上的tcp事件，如新建连接，关闭监听等情况</div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/privesccheck-terminal.html" class="Service-item">
+            <a href="/_plugins/privesccheck-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag004.png" alt="">
                 </div>
@@ -152,7 +152,7 @@
                 <div class="item-text">检测提权进程，检测的并非提权过程，而是结果</div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/lpm-terminal.html" class="Service-item">
+            <a href="/_plugins/lpm-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag004.png" alt="">
                 </div>
@@ -160,7 +160,7 @@
                 <div class="item-text">检测终端已安装软件列表</div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/cntrpm-terminal.html" class="Service-item">
+            <a href="/_plugins/cntrpm-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag004.png" alt="">
                 </div>
@@ -168,7 +168,7 @@
                 <div class="item-text">监控某容器内进程的运行情况，如果崩溃重启，资源占用情况</div>
                 <span class="item-link">进入</span>
             </a>
-            <a href="/plugins/cntrec-terminal.html" class="Service-item">
+            <a href="/_plugins/cntrec-terminal.html" class="Service-item">
                 <div class="item-image">
                     <img src="./images/icon-tag004.png" alt="">
                 </div>
@@ -181,7 +181,7 @@
 </div>
 <script>
 $.ajax({
-  url:"/index.php/manage/login/isLogin",
+  url:"/index.php/manage/redis_mgr/getPluginsList",
   type:"GET",
   datatype:"json",
   headers:
@@ -197,6 +197,11 @@ $.ajax({
     }
     else if (data.status==0)
     {
+	  for (var i=0;i<data.result.length;i++)
+	  {
+	    var item=$.parseJSON(data.result[i]);
+	    $("div[name='plugins_list']").append('<a href="/plugins/'+item.plugins_code+'/index.html" class="Service-item"><div class="item-image"><img src="./images/icon-tag004.png" alt=""></div><h3 class="item-title">'+item.plugins_name+'</h3><div class="item-text">'+item.plugins_desc+'</div><span class="item-link">进入</span></a>');
+	  }
     }
     else if (data.status==1)
     {

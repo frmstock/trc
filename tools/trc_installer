@@ -158,12 +158,12 @@ function checkConfig()
 function checkImageTrcMain()
 {
   echo -n "pull images trc_main ........ "
-  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:4 >/dev/null 2>&1
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:6 >/dev/null 2>&1
   if [ $? -ne 0 ]
   then
     echo "fail"
 	echo ""
-    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:4)"
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:6)"
     exit -1
   fi
   
@@ -270,12 +270,12 @@ function checkImageTrcDeamon()
 function checkImageTrcConsole()
 {
   echo -n "pull images trc_console ..... "
-  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.0 >/dev/null 2>&1
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.1 >/dev/null 2>&1
   if [ $? -ne 0 ]
   then
     echo "fail"
 	echo ""
-    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.0)"
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.1)"
     exit -1
   fi
   
@@ -286,12 +286,12 @@ function checkImageTrcConsole()
 function checkImageTrcNginx()
 {
   echo -n "pull images trc_nginx ....... "
-  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.0 >/dev/null 2>&1
+  docker pull registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.1 >/dev/null 2>&1
   if [ $? -ne 0 ]
   then
     echo "fail"
 	echo ""
-    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.0)"
+    echo "docker pull error.(registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.1)"
     exit -1
   fi
   
@@ -342,7 +342,7 @@ function createContainerTrcMain()
     return 0
   fi
   
-  docker run -d --name trc_main -v /etc/localtime:/etc/localtime:ro -it -p $port_https:443 -p $port_http:80 registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:4
+  docker run -d --name trc_main -v /etc/localtime:/etc/localtime:ro -it -p $port_https:443 -p $port_http:80 registry.cn-hangzhou.aliyuncs.com/frmstock/frmlinux:6
   if [ $? -ne 0 ]
   then
     echo "create container(trc_main) fail."
@@ -522,7 +522,7 @@ function createContainerTrcConsole()
     return 0
   fi
   
-  docker run -d --name trc_console -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/task":/opt/trc/tp5/task/ --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.0
+  docker run -d --name trc_console -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/task":/opt/trc/tp5/task/ --volumes-from trc_main --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_console:1.1
   if [ $? -ne 0 ]
   then
     echo "create container(trc_console) fail."
@@ -552,7 +552,7 @@ function createContainerTrcNginx()
     return 0
   fi
   
-  docker run -d --name trc_nginx -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/task":/opt/trc/www/task -v "$data_volume/trc/export":/opt/trc/www/export -v "$data_volume/trc/update":/opt/trc/www/update -v "$data_volume/trc/nginx/cert":/opt/trc/cert/ --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.0
+  docker run -d --name trc_nginx -v /etc/localtime:/etc/localtime:ro -v "$data_volume/trc/task":/opt/trc/www/task -v "$data_volume/trc/export":/opt/trc/www/export -v "$data_volume/trc/update":/opt/trc/www/update -v "$data_volume/trc/nginx/cert":/opt/trc/cert/ --volumes-from trc_main --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_nginx:1.1
   if [ $? -ne 0 ]
   then
     echo "create container(trc_nginx) fail."
