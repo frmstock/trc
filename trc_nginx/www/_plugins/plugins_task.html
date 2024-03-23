@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>插件任务管理</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+.button {
+    background-color: buttonface;/*#e7e7e7*/
+	border-color: buttonborder;/*#6c757d*/
+    border: 1px solid;
+    border-radius: .25rem;
+	/*border-style: outset;*/
+    color: black;
+    /*padding: 5px 5px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+a.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="plugins_usable.html">
+        <span class="icon-map2">可用插件</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>插件任务管理</strong></font></p>
+<p align="center">&nbsp;</p>
+<div align="left">
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<tbody name="task_list">
+		<tr style="background-color: lightgray;">
+			<td width='360' align="center">UUID</td>
+			<td width='360' align="center">名称</td>
+			<td width='50' align="center">类型</td>
+			<td width='60' align="center">状态</td>
+			<td width='180' align="center">创建时间</td>
+			<td width='180' align="center">更新时间</td>
+			<td align="center">操作</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+<script>
+$.ajax({
+  url:"/index.php/manage/task_mgr/getListPlg",
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    console.log(data);
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  for (var i=0;i<data.result.length;i++)
+	  {
+	    var type;
+		if(data.result[i].type==3)
+		{
+			type = "win";
+		}
+		else
+		{
+			type = "linux";
+		}
+		
+		var status;
+		var html = '';
+		if(data.result[i].status==0)
+		{
+			status = "新建";
+			html = html + '<tr><td>'+data.result[i].uuid+'</td><td>'+data.result[i].name+'</td><td>'+type+'</td><td>'+status+'</td><td>'+data.result[i].create_at+'</td><td>'+data.result[i].update_at+'</td><td align="center"><a style="width:80px;height:30px;" class="button" onclick="delone(\''+data.result[i].uuid+'\')">删除</a><a style="width:80px;height:30px;" class="button" onclick="info_task(\''+data.result[i].uuid+'\')">详情</a><a style="width:80px;height:30px;" class="button" onclick="release_task(\''+data.result[i].uuid+'\')">发布</a>';
+		}
+		else
+		{
+			status = "已发布";
+			html = html + '<tr><td>'+data.result[i].uuid+'</td><td>'+data.result[i].name+'</td><td>'+type+'</td><td>'+status+'</td><td>'+data.result[i].create_at+'</td><td>'+data.result[i].update_at+'</td><td align="center"><a style="width:80px;height:30px;" class="disabled button" onclick="delone(\''+data.result[i].uuid+'\')">删除</a><a style="width:80px;height:30px;" class="button" onclick="info_task(\''+data.result[i].uuid+'\')">详情</a><a style="width:80px;height:30px;" class="disabled button" onclick="release_task(\''+data.result[i].uuid+'\')">发布</a>';
+		}
+		html = html + '</td></tr></br>';
+		$("tbody[name='task_list']").append(html);
+	  }
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+    window.location.href="/index.html";
+  },
+});
+function info_task(id){
+	window.location.href="plugins_taskinfo.html?uuid="+id;
+}
+function delone(id){
+ 	var r=confirm("是否删除?");
+	if ( r == true ){
+	  $.ajax({
+	  	url:"/index.php/manage/task_mgr/delone?objid="+id,
+	  	type:"GET",
+	  	datatype:"json",
+	  	success:function delet(result){
+	  		if (result.status<0)
+              {
+                alert(result.message);
+                window.location.reload();
+              }
+	  		else if (result.status==0)
+	  		{
+ 				alert("删除成功!");
+                window.location.reload();
+	  		}
+	  		else if (result.status==1)
+              {
+                window.location.href=result.goto;
+              }
+              else
+              {
+                window.location.reload();
+              }
+	  	},
+	  	error:function(result){
+	  		window.location.reload();
+	  	}
+	  })
+	}
+}
+function release_task(id){
+  var r=confirm("是否发布?");
+  if ( r == true ){
+    $.ajax({
+    	url:"/index.php/manage/task_mgr/release?uuid="+id,
+    	type:"GET",
+    	datatype:"json",
+    	success:function delet(result){
+    		if (result.status<0)
+            {
+              alert(result.message);
+              window.location.reload();
+            }
+    		else if (result.status==0)
+    		{
+  			alert("发布成功!");
+              window.location.reload();
+    		}
+    		else if (result.status==1)
+            {
+              window.location.href=result.goto;
+            }
+            else
+            {
+              window.location.reload();
+            }
+    	},
+    	error:function(result){
+    		window.location.reload();
+    	}
+    })
+  }
+}
+</script>
+</body></html>

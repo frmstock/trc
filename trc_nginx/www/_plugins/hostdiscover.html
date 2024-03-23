@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://v.bootstrapmb.com/2020/4/l6d2d7689/ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>主机发现</title>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+ 
+    a {
+      text-decoration: none;
+    }
+	
+    body {
+      height: 100vh;
+      background-color: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #252525;
+    }
+	
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+:after, :before {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.content {
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<header class="header-design">
+  <div class="listar-map-button">
+    <div class="listar-map-button-text" style="display: inline-block; opacity: 1;">
+      <a href="/terminal.html">
+        <span class="icon-map2">终端管理</span>
+      </a>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</header>
+<div class="content">
+<p align="left"><font style="font-size:30px"><strong>未知主机</strong></font></p>
+<p align="center">&nbsp;</p>
+<table style="margin-top:10px;margin-bottom:10px;border-spacing: 0px;border: 1px solid #0075ff;" border="1">
+	<thead>
+		<tr style="background-color: lightgray;">
+			<td width='150' align="center">IP</td>
+			<td width='180' align="center">MAC</td>
+			<td width='80' align="center">活跃度</td>
+			<td width='180' align="center">发现时间</td>
+		</tr>
+	</thead>
+	<tbody name="terminal_list">
+	</tbody>
+</table>
+</div>
+<p align="center">&nbsp;</p>
+
+</div>
+<script>
+$.ajax({
+  url:"/index.php/manage/host_discover_mgr/getNewHosts",
+  type:"GET",
+  datatype:"json",
+  headers:
+  {
+    "content-type": "application/x-www-form-urlencoded"
+  },
+  success:function(data)
+  {
+    if (data.status<0)
+    {
+      alert(data.message);
+      window.location.href="/index.html";
+    }
+    else if (data.status==0)
+    {
+	  for (var i=0;i<data.result.length;i++)
+	  {
+	  	$("tbody[name='terminal_list']").append('<tr><td>'+data.result[i].ip+'</td><td>'+data.result[i].mac+'</td><td>'+data.result[i].activity+'</td><td>'+data.result[i].update_at+'</td></tr></br>');
+	  }
+    }
+    else if (data.status==1)
+    {
+      window.location.href=data.goto;
+    }
+    else
+    {
+      window.location.href="/index.html";
+    }
+  },
+  error:function()
+  {
+     window.location.href="/index.html";
+  },
+});
+function transform(data)
+{
+	if(data){
+		var date = new Date(data*1000);
+		var Year = date.getFullYear();
+		var Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+		var Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+		var Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+		var Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+		var Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+		return Year + '-' + Moth + '-' + Day + ' '+ Hour +':'+ Minute  + ':' + Sechond;
+	}
+	return '2015-10-01 08:12:00';
+}
+</script>
+</body></html>
