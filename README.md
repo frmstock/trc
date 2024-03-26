@@ -1,3 +1,4 @@
+```
 插件开发约束
 
 
@@ -5,26 +6,26 @@
 目录结构如下，目录结构不能改变
 trc_demo
   ├── alpine-minirootfs-3.17.3-x86_64.tar.gz	# 基础镜像，不需要改动
-  ├── code										# 后台程序目录
+  ├── code								# 后台程序目录
   │   ├── install_plugins						# 插件安装程序，不需要改动
   │   ├── install_plugins2						# 插件安装程序，不需要改动
   │   ├── myusers_deamon						# 入库程序，需要根据插件功能进行修改
   │   ├── plugins.conf							# 插件信息配置文件，需要修改
   │   ├── plugins_register						# 插件注册程序，不需要改动
   │   └── trc_myusers.sql						# 插件使用的表结构，根据插件功能进行修改
-  ├── Dockerfile								# 说明见下文
-  ├── lib64										# 不需要改动
+  ├── Dockerfile							# 说明见下文
+  ├── lib64								# 不需要改动
   │   └── libfrm.so
-  ├── php										# php代码，说明见下文
+  ├── php								# php代码，说明见下文
   │   ├── MyusersMgr.php
   │   └── Myusers.php
-  ├── plugins									# 插件程序目录，说明见下文
+  ├── plugins								# 插件程序目录，说明见下文
   │   ├── cron
   │   │   └── myusers.conf						# 插件执行定时配置文件
   │   ├── plug-ins
   │   │   └── myusers							# 插件程序
   │   └── plug-ins.conf							# 插件信息配置文件
-  └── www										# 静态页面，说明见下文
+  └── www								# 静态页面，说明见下文
       ├── detail.html
       └── index.html							# 插件的首页，是必须的，其它页面由插件功能决定
   
@@ -148,3 +149,4 @@ CMD ./myusers_deamon
 十一、www/detail.html
 	插件其它页面，需要与否由插件功能决定
 
+```
