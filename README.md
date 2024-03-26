@@ -149,4 +149,11 @@ CMD ./myusers_deamon
 十一、www/detail.html
 	插件其它页面，需要与否由插件功能决定
 
+
+部署：
+docker run -d --name trc_plg_demo --volumes-from trc_main -v /opt/trc/data/trc:/opt/trc --net=container:trc_main registry.cn-hangzhou.aliyuncs.com/frmstock/trc_plg_demo:1.1
+注：
+/opt/trc/data	为trc数据持久化目录，此为默认值，安装平台时可设置
+
+
 ```
