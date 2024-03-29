@@ -28,7 +28,15 @@ function procItem()
 
 function trc_status()
 {
-  docker ps -f "name=trc_" --format "{{.Names}} {{.State}}" 2>/dev/null | sort 2>/dev/null | while read line
+  local tmp=`docker ps -af "name=trc_" --format "{{.Names}} {{.State}}" 2>/dev/null`
+  local trc_tmp=`echo "$tmp" | grep -v -e "trc_plg_" 2>/dev/null | sort 2>/dev/null`
+  local plg_tmp=`echo "$tmp" | grep -e "trc_plg_" 2>/dev/null | sort 2>/dev/null`
+  echo "$trc_tmp" | while read line
+  do
+    procItem "$line"
+  done
+  
+  echo "$plg_tmp" | while read line
   do
     procItem "$line"
   done
@@ -56,6 +64,7 @@ function trc_start()
   docker start trc_redis
   docker start trc_es
   
+  sleep 6
   docker start trc_deamon
   docker start trc_server
   docker start trc_console
