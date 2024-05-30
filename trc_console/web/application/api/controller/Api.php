@@ -447,7 +447,7 @@ class Api
 					
 					foreach ($json->plug_ins as $key => $value)
 					{
-						$redis->hSet("plugins:update:" . $terminal->uuid, $key, "{\"name\":\"" . $key . "\", \"version\":\"\", \"conf\":\"\"}");
+						$redis->hSet("plugins:update:" . $terminal->uuid, $key, "{\"name\":\"" . $key . "\", \"version\":\"" . $json->plug_ins->$key->self . "\", \"conf\":\"" . $json->plug_ins->$key->conf . "\"}");
 						
 						$json->plug_ins->$key->entid = $terminal->enterprise_id;
 						$json->plug_ins->$key->objuuid = $terminal->uuid;

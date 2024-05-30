@@ -86,7 +86,7 @@ class PluginsMgr extends FrmController
     public function lazy_exec(Request $request)
     {
 		$task_save_dir = '/opt/task/';
-		$task_download_dir = '/opt/tp5/application/www/task/';
+		$task_download_dir = '/opt/trc/tp5/task/';
 		$entid = Session::get('entid');
 		$tuuid = $request->param('objid');
 		$name = $request->param('name');
@@ -146,7 +146,7 @@ class PluginsMgr extends FrmController
     public function uninstall(Request $request)
     {
 		$task_save_dir = '/opt/task/';
-		$task_download_dir = '/opt/tp5/application/www/task/';
+		$task_download_dir = '/opt/trc/tp5/task/';
 		$entid = Session::get('entid');
 		$tuuid = $request->param('objid');
 		$name = $request->param('name');
